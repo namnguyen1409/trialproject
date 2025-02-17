@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<body>
+
+<div class="input-group has-validation" th:fragment="customInput(name, type, icon, label, required)">
+
+    <div class="input-group">
+        <span class="input-group-text p-3">
+            <i th:class="'bi ' + ${icon}"></i>
+        </span>
+        <div class="form-floating"
+             th:classappend="${#fields.hasErrors('__${name}__')} ? 'is-invalid' : ''"
+        >
+            <input class="form-control" th:required="${required}"
+                   th:classappend="${#fields.hasErrors('__${name}__')} ? 'is-invalid' : ''"
+                   th:field="*{__${name}__}"
+                   th:placeholder="${label}" th:type="${type}">
+          <label th:for="${name}" class="form-label" th:text="${label}"></label>
+        </div>
+    </div>
+    <th:block th:if="${#fields.hasErrors('__${name}__')}">
+        <div class="invalid-feedback d-block" th:errors="*{__${name}__}"></div>
+    </th:block>
+</div>
+</body>
+</html>

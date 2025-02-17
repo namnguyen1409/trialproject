@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en" layout:decorate="template"
+
+>
+<body>
+<section layout:fragment="content" class="container h-100">
+    <div class="row justify-content-center">
+        <div class="col-12 d-flex flex-column nowrap justify-content-center">
+
+            <h1 class="text-center mt-3">Hóa đơn nhập hàng</h1>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="warehouseId" onchange="getAllZones(this.value)">
+                            <option value="0">Chọn kho hàng</option>
+                            <th:block sec:authorize="hasRole('OWNER')">
+                                <th:block th:each="warehouse : ${inventories}">
+                                    <option th:value="${warehouse.id}" th:text="${warehouse.name}"></option>
+                                </th:block>
+                            </th:block>
+                            <th:block sec:authorize="hasRole('STAFF')">
+                                <option th:value="${inventory.id}" th:text="${inventory.name}"></option>
+                            </th:block>
+                        </select>
+                        <label for="warehouseId">Chọn kho hàng</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="productName" placeholder="Nhập tên sản phẩm">
+                        <label for="productName">Nhập tên sản phẩm</label>
+                    </div>
+                    <div class="list-group d-none" id="productSuggestion">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="weightInput" placeholder="Nhập khối lượng (kg)">
+                        <label for="weightInput">Nhập khối lượng (kg)</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="priceInput" placeholder="Nhập giá (đ/kg)">
+                        <label for="priceInput">Nhập giá (đ/kg)</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="zoneId">
+                            <option value="0">Chọn khu vực</option>
+
+                        </select>
+                        <label for="zoneId">Chọn khu vực</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <button class="btn btn-primary" onclick="addProduct()">Thêm sản phẩm</button>
+                </div>
+
+            </div>
+
+
+
+            <div class="table-responsive mt-3" id="productTable">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Tên sản phẩm</th>
+                        <th scope="col">Ảnh sản phẩm</th>
+                        <th scope="col">Khối lượng (kg)</th>
+                        <th scope="col">Giá (đ/kg)</th>
+                        <th scope="col">Tổng tiền</th>
+                        <th scope="col">Khu vực</th>
+                        <th scope="col">Thao tác</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="productList">
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    <script>
+        let items = [];
+        let zones = new Map(); // Map để tối ưu truy vấn zone theo id
+        let copyZones = new Map();
+        let currentItem = null;
+        let zoneMap = new Map();
+
+        const showSwal = (icon, title) => {
+            Swal.fire({ icon, title, showConfirmButton: false, timer: 1500 });
+        };
+
+        const getAllZones = async (inventoryId) => {
+            try {
+                let response = await fetch(`/api/inventory/${inventoryId}/zones`);
+                let data = await response.json();
+
+                if (data.length === 0) {
+                    showSwal('error', 'Chưa có khu nào trong kho này, vui lòng chọn kho khác!');
+                    document.getElementById('warehouseId').value = 0;
+                    return;
+                }
+
+                document.getElementById('warehouseId').setAttribute('disabled', 'disabled');
+                showSwal('info', 'Đã chọn kho hàng, bạn không thể thay đổi!');
+
+                zones.clear();
+                copyZones.clear();
+                data.forEach(zone => {
+                    zones.set(zone.id, zone);
+                    copyZones.set(zone.id, { ...zone });
+                });
+
+            } catch (error) {
+                console.error('Lỗi tải khu vực:', error);
+            }
+        };
+
+        const searchProductByName = async () => {
+            let productName = document.getElementById('productName').value.trim();
+            if (productName.length < 3) return;
+
+            try {
+                let response = await fetch(`/api/products/search?name=${productName}`);
+                let data = await response.json();
+
+                let productSuggestion = document.getElementById('productSuggestion');
+                productSuggestion.innerHTML = '';
+
+                let fragment = document.createDocumentFragment();
+                data.forEach(product => {
+                    let productElement = document.createElement('a');
+                    productElement.classList.add('list-group-item', 'list-group-item-action');
+                    productElement.innerHTML = `
+                    <img src="/${product.image}" alt="${product.name}" width="50px">
+                    <span>${product.name}</span>
+                `;
+                    productElement.onclick = () => selectProduct(product);
+                    fragment.appendChild(productElement);
+                });
+
+                productSuggestion.appendChild(fragment);
+                productSuggestion.classList.remove('d-none');
+            } catch (error) {
+                console.error('Lỗi tìm kiếm sản phẩm:', error);
+            }
+        };
+
+        const selectProduct = (product) => {
+            document.getElementById('productName').value = product.name;
+            currentItem = { id: product.id, name: product.name, image: product.image, price: 0, weight: 0, total: 0, zoneId: 0 };
+
+            let availableZones = Array.from(copyZones.values()).filter(zone =>
+                (zone.productId === product.id || zone.productId === null) && !zoneMap.has(`${product.id}-${zone.id}`)
+            );
+
+
+
+            let zoneSelect = document.getElementById('zoneId');
+            zoneSelect.innerHTML = '';
+            availableZones.forEach(zone => {
+                let option = new Option(zone.name, zone.id);
+                zoneSelect.appendChild(option);
+            });
+
+            if (availableZones.length === 0) {
+                document.getElementById('productSuggestion').classList.add('d-none');
+                showSwal('error', 'Không có khu nào phù hợp với sản phẩm này!');
+                return;
+            }
+
+            document.getElementById('productSuggestion').classList.add('d-none');
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('productName').addEventListener('input', searchProductByName);
+        });
+
+        const addProduct = () => {
+            if (!currentItem) {
+                showSwal('error', 'Vui lòng chọn sản phẩm trước!');
+                return;
+            }
+
+            let weight = document.getElementById('weightInput').value;
+            let price = document.getElementById('priceInput').value;
+            let zoneId = parseInt(document.getElementById('zoneId').value);
+
+            if (weight <= 0 || price <= 0 || !zoneId) {
+                showSwal('error', 'Vui lòng nhập đầy đủ thông tin!');
+                return;
+            }
+
+            let zoneKey = `${currentItem.id}-${zoneId}`;
+            if (zoneMap.has(zoneKey)) {
+                showSwal('error', 'Sản phẩm này đã được thêm vào khu vực này!');
+                return;
+            }
+
+            zoneMap.set(zoneKey, true);
+            copyZones.set(zoneId, { ...copyZones.get(zoneId), productId: currentItem.id });
+
+            let newItem = { ...currentItem, weight, price, total: weight * price, zoneId };
+            items.push(newItem);
+            currentItem = null;
+
+            document.getElementById('productName').value = '';
+            document.getElementById('weightInput').value = '';
+            document.getElementById('priceInput').value = '';
+            document.getElementById('zoneId').value = 0;
+
+            renderProductList();
+        };
+
+        const renderProductList = () => {
+            let productList = document.getElementById('productList');
+            productList.innerHTML = '';
+
+            let fragment = document.createDocumentFragment();
+            items.forEach((item, index) => {
+                let row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${item.name}</td>
+                <td><img src="/${item.image}" alt="${item.name}" width="50px"></td>
+                <td>${item.weight}</td>
+                <td>${formatCurrency(item.price)}</td>
+                <td>${formatCurrency(item.total)}</td>
+                <td>${zones.get(item.zoneId).name}</td>
+                <td>
+                    <button class="btn btn-danger" onclick="removeProduct(${index})">Xóa</button>
+                </td>
+            `;
+                fragment.appendChild(row);
+            });
+
+            productList.appendChild(fragment);
+            document.getElementById('productTable').classList.toggle('d-none', items.length === 0);
+        };
+
+        const removeProduct = (index) => {
+            let removedItem = items.splice(index, 1)[0];
+            let zoneKey = `${removedItem.id}-${removedItem.zoneId}`;
+            zoneMap.delete(zoneKey);
+
+            let originalZone = zones.get(removedItem.zoneId);
+            copyZones.set(removedItem.zoneId, { ...originalZone });
+
+            renderProductList();
+        };
+
+        const formatCurrency = (value) => {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+        };
+    </script>
+
+
+</section>
+</body>
+</html>

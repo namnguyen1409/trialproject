@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en" layout:decorate="template"
+
+>
+<body>
+<section layout:fragment="content" class="container h-100">
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-10 col-lg-8 d-flex flex-column nowrap justify-content-center">
+            <div class="card mt-4 mb-4">
+                <div class="card-header">
+                    <h4 class="card-title"> Thêm mới khu vực trong kho</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="p-md-4" th:object="${zone}" th:action="@{'add'}">
+                        <div class="mb-3">
+                            <div th:replace="fragments/input :: customInput('name', 'text', 'bi-hash', 'Tên khu vực', true)"></div>
+                        </div>
+                        <div class="mb-3">
+                            <div th:replace="fragments/textarea :: customTextarea('description', 'bi-justify', 'Mô tả')"></div>
+                        </div>
+                        <div th:replace="fragments/recapcha :: recapcha"></div>
+                        <p th:text="${error}" class="text-danger mb-3"></p>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-person-plus-fill"></i>
+                            Thêm mới
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  <script>
+
+    let currentPage = 0;
+    let isLoading = false;
+
+    $('#productName').autocomplete({
+      source: function(request, response) {
+        currentPage = 0;
+        isLoading = false;
+        loadProducts(request.term, response);
+      },
+      minLength: 1,
+      select: function(event, ui) {
+        console.log('Selected product:', ui.item);
+      },
+      open: function() {
+        let autocompleteMenu = $(".ui-autocomplete");
+        autocompleteMenu.scroll(function() {
+          if (
+                  autocompleteMenu.scrollTop() + autocompleteMenu.innerHeight() >=
+                  autocompleteMenu[0].scrollHeight
+          ) {
+            if (!isLoading) {
+              isLoading = true;
+              currentPage++; // Tăng trang lên
+              loadProducts($('#productName').val(), appendResults);
+            }
+          }
+        });
+      }
+    });
+
+    // Hàm tải sản phẩm
+    function loadProducts(term, callback) {
+      $.ajax({
+        url: '/api/products/search',
+        type: 'GET',
+        dataType: 'json',
+        data: {
+          term: term,
+          page: currentPage,
+          size: 10 // Số sản phẩm mỗi lần tải
+        },
+        success: function(data) {
+          isLoading = false; // Cho phép tải tiếp
+          callback(data.map(product => ({
+            label: product.name + " - $" + product.price,
+            value: product.name,
+            id: product.id,
+            imageUrl: product.imageUrl
+          })));
+        }
+      });
+    }
+
+    // Hàm append kết quả mới
+    function appendResults(newItems) {
+      let menu = $(".ui-autocomplete");
+      newItems.forEach(item => {
+        $("<li>")
+                .append($("<div>").text(item.label))
+                .appendTo(menu);
+      });
+    }
+
+  </script>
+
+
+</section>
+</body>
+</html>
