@@ -3,6 +3,7 @@ package com.hsf302.trialproject.invoice.entity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hsf302.trialproject.common.exception.Http500;
+import com.hsf302.trialproject.inventory.entity.Zone;
 import com.hsf302.trialproject.product.dto.ProductDTO;
 import com.hsf302.trialproject.product.entity.Product;
 import jakarta.persistence.*;

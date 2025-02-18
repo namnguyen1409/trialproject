@@ -20,7 +20,6 @@ public class InvoiceMapper {
                 .totalDebt(invoice.getTotalDebt())
                 .customerId(invoice.getCustomer().getId())
                 .description(invoice.getDescription())
-                .invoiceDate(invoice.getInvoiceDate())
                 .isShipped(invoice.isShipped())
                 .build();
     }
@@ -34,7 +33,6 @@ public class InvoiceMapper {
                 .totalPaid(invoiceDTO.getTotalPaid())
                 .totalDebt(invoiceDTO.getTotalDebt())
                 .description(invoiceDTO.getDescription())
-                .invoiceDate(invoiceDTO.getInvoiceDate())
                 .isShipped(invoiceDTO.isShipped())
                 .build();
 

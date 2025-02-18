@@ -9,6 +9,7 @@ public interface CustomerService {
     Page<CustomerDTO> findPaginatedCustomersByFullNameContaining(String fullName, int pageNumber, int pageSize);
     Page<CustomerDTO> findPaginatedCustomersByCreatedById(Long createdById, Pageable pageable);
     CustomerDTO findCustomerById(Long id);
+    CustomerDTO findCustomerByPhone(String phone);
     void saveCustomer(CustomerDTO customerDTO);
     Boolean existByPhone(String phone);
     Boolean existByEmail(String email);

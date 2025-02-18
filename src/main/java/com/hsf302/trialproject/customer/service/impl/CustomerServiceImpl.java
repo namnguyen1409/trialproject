@@ -55,6 +55,12 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public CustomerDTO findCustomerByPhone(String phone) {
+        Optional<Customer> customerOptional = customerRepository.findByPhone(phone);
+        return customerOptional.map(customer -> customerMapper.mapToCustomerDTO(customer)).orElse(null);
+    }
+
+    @Override
     public void saveCustomer(CustomerDTO customerDTO) {
         Customer customer = customerMapper.mapToCustomer(customerDTO);
         customerRepository.save(customer);

@@ -49,9 +49,6 @@ public class Invoice extends BaseEntity {
     @Column(name = "description", columnDefinition = "nvarchar(255)")
     private String description;
 
-    @Column(name = "invoice_date", nullable = false)
-    private LocalDate invoiceDate;
-
     @Column(name = "is_shipped", nullable = false)
     private boolean isShipped;
 

@@ -3,7 +3,6 @@ package com.hsf302.trialproject.invoice.controller;
 import com.hsf302.trialproject.auth.security.CustomUserDetails;
 import com.hsf302.trialproject.inventory.service.InventoryService;
 import com.hsf302.trialproject.user.entity.User;
-import com.hsf302.trialproject.user.enums.RoleType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,26 +18,44 @@ public class InvoiceController {
     private final InventoryService inventoryService;
 
 
-    private User getUser() {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        return userDetails.getUser();
-    }
-
     @GetMapping("/import")
     public String importInvoice(
             Model model
-    ) {
-        User u = getUser();
+    ) throws Exception {
+        User u = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal()).getUser();
 
-        if (u.getRole().equals(RoleType.STAFF)) {
+        if (u.getRole().toString() == "STAFF") {
             model.addAttribute("inventory", inventoryService.findInventoryById(u.getAssignedInventory().getId()));
         }
-        else if(u.getRole().equals(RoleType.OWNER)) {
+        else if(u.getRole().toString() == "OWNER") {
             model.addAttribute("inventories", inventoryService.findAllInventoriesByOwnerId(u.getId()));
         }
-
+        else if (u.getRole() != null) {
+            System.out.println("Unhandled role");
+            throw new Exception("Unhandled role");
+        }
         return "invoice/import";
+    }
+
+    @GetMapping("/export")
+    public String exportInvoice(
+            Model model
+    ) throws Exception {
+        User u = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal()).getUser();
+
+        if (u.getRole().toString() == "STAFF") {
+            model.addAttribute("inventory", inventoryService.findInventoryById(u.getAssignedInventory().getId()));
+        }
+        else if(u.getRole().toString() == "OWNER") {
+            model.addAttribute("inventories", inventoryService.findAllInventoriesByOwnerId(u.getId()));
+        }
+        else if (u.getRole() != null) {
+            System.out.println("Unhandled role");
+            throw new Exception("Unhandled role");
+        }
+        return "invoice/export";
     }
 
 
