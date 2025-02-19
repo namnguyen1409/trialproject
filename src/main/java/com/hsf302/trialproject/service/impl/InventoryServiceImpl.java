@@ -68,15 +68,10 @@ public class InventoryServiceImpl implements InventoryService {
         inventoryRepository.save(inventory);
     }
 
-    @Override
-    public void saveInventory1(InventoryDTO inventoryDTO) {
-        Inventory inventory = inventoryMapper.mapToInventory(inventoryDTO);
-        inventoryRepository.save(inventory);
-    }
 
     @Override
     public void deleteInventoryById(Long id) {
-
+        inventoryRepository.deleteById(id);
     }
 
     @Override

@@ -38,10 +38,9 @@ public class InventoryController {
     private final XSSProtectedUtil xssProtectedUtil;
 
     private User getUser() {
-//        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
-//                .getPrincipal();
-//        return userDetails.getUser();
-        return ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        return userDetails.getUser();
     }
 
 
@@ -108,7 +107,7 @@ public class InventoryController {
         model.addAttribute("searchAbleFields", searchAbleFields);
 
         // Configure sorting
-        Sort sortDirection = "asc" == direction
+        Sort sortDirection = "asc".equalsIgnoreCase(direction)
                 ? Sort.by(orderBy).ascending()
                 : Sort.by(orderBy).descending();
         Pageable pageable = PageRequest.of(page - 1, size, sortDirection);
