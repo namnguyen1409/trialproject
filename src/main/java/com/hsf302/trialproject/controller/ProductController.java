@@ -45,11 +45,14 @@ public class ProductController {
     }
 
     private Map<String, String> createPairs(List<String> fields, List<String> fieldTitles) {
-        Map<String, String> pairs = new HashMap<>();
-        for (int i = 0; i < fields.size(); i++) {
-            pairs.put(fields.get(i), fieldTitles.get(i));
+        if (fields.size() > 0 && fields.size() == fieldTitles.size()) {
+            Map<String, String> pairs = new HashMap<>();
+            for (int i = 0; i < fields.size(); i++) {
+                pairs.put(fields.get(i), fieldTitles.get(i));
+            }
+            return pairs;
         }
-        return pairs;
+        return null;
     }
 
 

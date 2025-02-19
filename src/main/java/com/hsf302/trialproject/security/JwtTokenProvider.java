@@ -51,13 +51,13 @@ public class JwtTokenProvider {
             getClaimsFromToken(authToken);
             return true;
         } catch(SecurityException | MalformedJwtException e) {
-            logger.error("JWT was expired or incorrect");
+            System.out.println("JWT was expired or incorrect");
         } catch (ExpiredJwtException e) {
-            logger.error("JWT was expired");
+            System.out.println("JWT was expired");
         } catch (UnsupportedJwtException e) {
-            logger.error("JWT was unsupported");
+            System.out.println("JWT was unsupported");
         } catch (IllegalArgumentException e) {
-            logger.error("JWT was empty");
+            System.out.println("JWT was empty");
         }
         return false;
     }

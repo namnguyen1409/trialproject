@@ -23,6 +23,7 @@ import com.hsf302.trialproject.entity.User;
 import com.hsf302.trialproject.repository.RefreshTokenRepository;
 import com.hsf302.trialproject.repository.RegistrationTokenRepository;
 import com.hsf302.trialproject.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -115,7 +116,7 @@ public class AuthController {
             return ViewEnum.LOGIN.getViewName();
         }
         Optional<User> userOptional = userRepository.findByUsername(loginDTO.getUsername());
-        if (userOptional.isEmpty() || !passwordEncoder.matches(loginDTO.getPassword(), userOptional.get().getPassword())) {
+        if (!passwordEncoder.matches(loginDTO.getPassword(), userOptional.get().getPassword())) {
             bindingResult.rejectValue("password", MessageKeyEnum.ERROR_LOGIN_PASSWORD.getKey());
             return ViewEnum.LOGIN.getViewName();
         }

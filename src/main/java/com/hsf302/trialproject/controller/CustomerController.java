@@ -16,10 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Controller
@@ -35,13 +32,23 @@ public class CustomerController {
         return userDetails.getUser();
     }
 
+    private User getUser2() {
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        return userDetails.getUser();
+    }
+
+
 
     private Map<String, String> createPairs(List<String> fields, List<String> fieldTitles) {
-        Map<String, String> pairs = new HashMap<>();
-        for (int i = 0; i < fields.size(); i++) {
-            pairs.put(fields.get(i), fieldTitles.get(i));
+        if (fields.size() > 0 && fields.size() == fieldTitles.size()) {
+            Map<String, String> pairs = new HashMap<>();
+            for (int i = 0; i < fields.size(); i++) {
+                pairs.put(fields.get(i), fieldTitles.get(i));
+            }
+            return pairs;
         }
-        return pairs;
+        return null;
     }
 
     @GetMapping("/list")
@@ -74,12 +81,20 @@ public class CustomerController {
         Pageable pageable = PageRequest.of(page - 1, size, sortDirection);
         Page<CustomerDTO> customers;
         if (search != null && !search.isEmpty()) {
-            customers = switch (searchBy) {
-                case "fullName" -> customerService.findPaginatedCustomersByCreatedByIdAndFullNameContaining(getUser().getId(), search, pageable);
-                case "phone" -> customerService.findPaginatedCustomersByCreatedByIdAndPhoneContaining(getUser().getId(), search, pageable);
-                case "email" -> customerService.findPaginatedCustomersByCreatedByIdAndEmailContaining(getUser().getId(), search, pageable);
-                case "address" -> customerService.findPaginatedCustomersByCreatedByIdAndAddressContaining(getUser().getId(), search, pageable);
-                default -> customerService.findPaginatedCustomersByCreatedById(getUser().getId(), pageable);
+             switch (searchBy) {
+                case "fullName":
+                    customers = customerService.findPaginatedCustomersByCreatedByIdAndFullNameContaining(getUser().getId(), search, pageable);
+                case "phone" :
+                    customers = customerService.findPaginatedCustomersByCreatedByIdAndPhoneContaining(getUser2().getId(), search, pageable);
+                    break;
+                case "email":
+                    customers = customerService.findPaginatedCustomersByCreatedByIdAndEmailContaining(getUser().getId(), search, pageable);
+                    break;
+                case "address":
+                    customers = customerService.findPaginatedCustomersByCreatedByIdAndAddressContaining(getUser().getId(), search, pageable);
+                    break;
+                default :
+                    customers = customerService.findPaginatedCustomersByCreatedById(getUser().getId(), pageable);
             };
         } else {
             customers = customerService.findPaginatedCustomersByCreatedById(getUser().getId(), pageable);
@@ -107,10 +122,10 @@ public class CustomerController {
             BindingResult bindingResult
     ) {
 
-        if(Boolean.TRUE.equals(customerService.existByPhone(customerDTO.getPhone()))) {
+        if(customerService.existByPhone(customerDTO.getPhone())) {
             bindingResult.rejectValue("phone", "error.phone", "Số điện thoại đã tồn tại");
         }
-        if(Boolean.TRUE.equals(customerService.existByEmail(customerDTO.getEmail()))) {
+        if(customerService.existByEmail(customerDTO.getEmail())) {
             bindingResult.rejectValue("email", "error.email", "Email đã tồn tại");
         }
         if (bindingResult.hasErrors()) {

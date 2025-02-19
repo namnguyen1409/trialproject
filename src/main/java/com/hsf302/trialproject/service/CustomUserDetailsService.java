@@ -22,26 +22,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UsernameNotFoundException(messageService.getMessage(MessageKeyEnum.ERROR_USERNAME_NOT_FOUND.getKey()));
-        }
         return new CustomUserDetails(user.get());
     }
 
     public UserDetails loadUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()) {
-            throw new UsernameNotFoundException(messageService.getMessage(MessageKeyEnum.ERROR_USERNAME_NOT_FOUND.getKey()));
-        }
         return new CustomUserDetails(user.get());
     }
 
 
     public CustomUserDetails loadUserByRefreshToken(String refreshToken) {
         Optional<User> user = userRepository.findByRefreshTokens_Token(refreshToken);
-        if (user.isEmpty()) {
-            throw new UsernameNotFoundException(messageService.getMessage(MessageKeyEnum.ERROR_USERNAME_NOT_FOUND.getKey()));
-        }
         return new CustomUserDetails(user.get());
     }
 

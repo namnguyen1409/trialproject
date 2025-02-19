@@ -166,10 +166,9 @@ public class FileSystemStorageServiceImpl implements StorageService {
             else {
                 throw new StorageFileNotFoundException(
                         "Could not read file: " + filename);
-
             }
         }
-        catch (MalformedURLException e) {
+        catch (Exception e) {
             throw new StorageFileNotFoundException("Could not read file: " + filename, e);
         }
     }
