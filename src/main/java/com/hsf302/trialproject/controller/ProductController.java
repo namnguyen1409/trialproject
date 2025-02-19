@@ -21,10 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/product")
@@ -36,6 +33,7 @@ public class ProductController {
     private final XSSProtectedUtil xssProtectedUtil;
     private final StorageService storageService;
 
+    private static final String PRICE = "price";
 
     private User getUser() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
@@ -44,14 +42,14 @@ public class ProductController {
     }
 
     private Map<String, String> createPairs(List<String> fields, List<String> fieldTitles) {
-        if (fields.size() > 0 && fields.size() == fieldTitles.size()) {
+        if (!fields.isEmpty() && fields.size() == fieldTitles.size()) {
             Map<String, String> pairs = new HashMap<>();
             for (int i = 0; i < fields.size(); i++) {
                 pairs.put(fields.get(i), fieldTitles.get(i));
             }
             return pairs;
         }
-        return null;
+        return Collections.emptyMap();
     }
 
 
@@ -71,7 +69,7 @@ public class ProductController {
 
 
         if (productDTO.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
-            bindingResult.rejectValue("price", "price.error", "Giá bán phải lớn hơn 0");
+            bindingResult.rejectValue(PRICE, "price.error", "Giá bán phải lớn hơn 0");
         }
         if (bindingResult.hasErrors()) {
             return "product/add";
@@ -96,9 +94,9 @@ public class ProductController {
             @RequestParam(value = "orderBy", required = false, defaultValue = "createdAt") String orderBy,
             @RequestParam(value = "direction", required = false, defaultValue = "desc") String direction
     ) {
-        List<String> fields = Arrays.asList("image", "name","price");
+        List<String> fields = Arrays.asList("image", "name",PRICE);
         Map<String, String> fieldTitles = createPairs(fields, Arrays.asList("Hình ảnh", "Tên", "Giá"));
-        Map<String, String> fieldClasses = createPairs(fields, Arrays.asList("image", "","price"));
+        Map<String, String> fieldClasses = createPairs(fields, Arrays.asList("image", "",PRICE));
         List<String> searchAbleFields = Arrays.asList("name", "description");
 
         model.addAttribute("fields", fields);
@@ -124,12 +122,13 @@ public class ProductController {
              switch (searchBy) {
                 case "name" :
                     products = productService.findPaginatedProductsByOwnerIdAndNameContaining(getUser().getId(), search, pageable);
+                    break;
                 case "description":
                     products = productService.findPaginatedProductsByOwnerIdAndDescriptionContaining(getUser().getId(), search, pageable);
                     break;
                 default:
                     products = productService.findPaginatedProductsByOwnerId(getUser().getId(), pageable);
-            };;
+            }
         } else {
             products = productService.findPaginatedProductsByOwnerId(getUser().getId(), pageable);
         }
