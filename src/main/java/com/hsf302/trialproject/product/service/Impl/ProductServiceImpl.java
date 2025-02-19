@@ -1,7 +1,7 @@
 package com.hsf302.trialproject.product.service.Impl;
 
-import com.hsf302.trialproject.product.dto.ProductDTO;
-import com.hsf302.trialproject.product.entity.Product;
+import com.hsf302.trialproject.dto.ProductDTO;
+import com.hsf302.trialproject.entity.Product;
 import com.hsf302.trialproject.product.exception.ProductNoSuchElementException;
 import com.hsf302.trialproject.product.mapper.ProductMapper;
 import com.hsf302.trialproject.product.repository.ProductRepository;

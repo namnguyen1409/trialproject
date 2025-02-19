@@ -1,6 +1,6 @@
 package com.hsf302.trialproject;
 
-import com.hsf302.trialproject.common.service.StorageService;
+import com.hsf302.trialproject.service.StorageService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

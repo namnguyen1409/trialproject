@@ -1,10 +1,11 @@
 package com.hsf302.trialproject.user.service.Impl;
 
-import com.hsf302.trialproject.user.dto.UserDTO;
-import com.hsf302.trialproject.user.entity.User;
-import com.hsf302.trialproject.user.exception.UserNoSuchElementException;
-import com.hsf302.trialproject.user.mapper.UserMapper;
-import com.hsf302.trialproject.user.repository.UserRepository;
+import com.hsf302.trialproject.dto.UserDTO;
+import com.hsf302.trialproject.entity.User;
+import com.hsf302.trialproject.exception.UserNoSuchElementException;
+import com.hsf302.trialproject.mapper.UserMapper;
+import com.hsf302.trialproject.repository.UserRepository;
+import com.hsf302.trialproject.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

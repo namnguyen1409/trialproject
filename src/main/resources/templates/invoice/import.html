@@ -6,16 +6,46 @@
 
 >
 <body>
-<section layout:fragment="content" class="container h-100">
+<section layout:fragment="content" class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-12 d-flex flex-column nowrap justify-content-center">
-
-            <h1 class="text-center mt-3">Hóa đơn nhập hàng</h1>
+        <div class="col-lg-10">
+            <h2 class="text-center mb-4">Hóa đơn nhập hàng</h2>
             <hr>
-            <div class="row">
+
+            <h3 class="text-center">Thông tin khách hàng</h3>
+            <div class="row g-3">
                 <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <select class="form-select" id="warehouseId" onchange="getAllZones(this.value)">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="phoneNumber" placeholder="Số điện thoại" onblur="fetchCustomerInfo(this.value)">
+                        <label for="phoneNumber">Số điện thoại</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="customerName" placeholder="Họ tên khách hàng" readonly>
+                        <label for="customerName">Họ tên khách hàng</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="email" class="form-control" id="email" placeholder="Email khách hàng" readonly>
+                        <label for="email">Email khách hàng</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="address" placeholder="Địa chỉ khách hàng" readonly>
+                        <label for="address">Địa chỉ khách hàng</label>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <h3 class="text-center">Thông tin kho hàng</h3>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" id="warehouseId">
                             <option value="0">Chọn kho hàng</option>
                             <th:block sec:authorize="hasRole('OWNER')">
                                 <th:block th:each="warehouse : ${inventories}">
@@ -31,81 +61,105 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
+            <hr>
+            <h3 class="text-center">Thông tin sản phẩm</h3>
+            <div class="row g-3 mt-3">
+                <div class="col-md-6 position-relative">
+                    <div class="form-floating">
                         <input type="text" class="form-control" id="productName" placeholder="Nhập tên sản phẩm">
                         <label for="productName">Nhập tên sản phẩm</label>
                     </div>
-                    <div class="list-group d-none" id="productSuggestion">
-                    </div>
+                    <div class="list-group d-none position-absolute w-100 z-3" id="productSuggestion"></div>
                 </div>
 
                 <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="weightInput" placeholder="Nhập khối lượng (kg)">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="weightInput" placeholder="Nhập khối lượng (kg)">
                         <label for="weightInput">Nhập khối lượng (kg)</label>
                     </div>
                 </div>
 
                 <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="priceInput" placeholder="Nhập giá (đ/kg)">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="priceInput" placeholder="Nhập giá (đ/kg)">
                         <label for="priceInput">Nhập giá (đ/kg)</label>
                     </div>
                 </div>
 
                 <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="form-floating">
                         <select class="form-select" id="zoneId">
                             <option value="0">Chọn khu vực</option>
-
                         </select>
                         <label for="zoneId">Chọn khu vực</label>
                     </div>
                 </div>
 
-                <div class="col-md-6">
-                    <button class="btn btn-primary" onclick="addProduct()">Thêm sản phẩm</button>
+                <div class="col-12">
+                    <button class="btn btn-success w-100" onclick="addProduct()">Thêm sản phẩm</button>
                 </div>
-
             </div>
 
-
-
-            <div class="table-responsive mt-3" id="productTable">
-                <table class="table table-striped">
-                    <thead>
+            <!-- Bảng danh sách sản phẩm -->
+            <div class="table-responsive mt-4">
+                <table class="table table-bordered">
+                    <thead class="table-light">
                     <tr>
-                        <th scope="col">STT</th>
-                        <th scope="col">Tên sản phẩm</th>
-                        <th scope="col">Ảnh sản phẩm</th>
-                        <th scope="col">Khối lượng (kg)</th>
-                        <th scope="col">Giá (đ/kg)</th>
-                        <th scope="col">Tổng tiền</th>
-                        <th scope="col">Khu vực</th>
-                        <th scope="col">Thao tác</th>
+                        <th>#</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Ảnh</th>
+                        <th>Khối lượng (kg)</th>
+                        <th>Giá (đ/kg)</th>
+                        <th>Tổng tiền</th>
+                        <th>Khu vực</th>
+                        <th>Thao tác</th>
                     </tr>
                     </thead>
-
-                    <tbody id="productList">
-                    </tbody>
+                    <tbody id="productList"></tbody>
                 </table>
             </div>
 
+            <hr>
+            <h3 class="text-center">Tổng tiền</h3>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="total" placeholder="Tổng tiền" readonly>
+                        <label for="total">Tổng tiền</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="paid" placeholder="Đã trả">
+                        <label for="paid">Đã trả</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="remaining" placeholder="Còn lại" readonly>
+                        <label for="remaining">Còn lại</label>
+                    </div>
+                </div>
+            </div>
 
+            <div class="mt-3 text-center">
+                <button class="btn btn-primary w-50" onclick="saveInvoice()">Lưu hóa đơn</button>
+            </div>
         </div>
+
+        <div style="height: 200px"></div>
+
     </div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
     <script>
         let items = [];
-        let zones = new Map(); // Map để tối ưu truy vấn zone theo id
+        let zones = new Map();
         let copyZones = new Map();
         let currentItem = null;
         let zoneMap = new Map();
-
         const showSwal = (icon, title) => {
             Swal.fire({ icon, title, showConfirmButton: false, timer: 1500 });
         };
@@ -135,6 +189,15 @@
                 console.error('Lỗi tải khu vực:', error);
             }
         };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('warehouseId').addEventListener('change', (event) => {
+                let inventoryId = event.target.value;
+                if (inventoryId === '0') return;
+
+                getAllZones(inventoryId);
+            });
+        });
 
         const searchProductByName = async () => {
             let productName = document.getElementById('productName').value.trim();
@@ -196,6 +259,15 @@
             document.getElementById('productName').addEventListener('input', searchProductByName);
         });
 
+        const calculateTotal = () => {
+            let total = items.length ? items.reduce((sum, item) => sum + (item.total || 0), 0) : 0;
+            let paid = parseInt(document.getElementById('paid').value) || 0;
+            let remaining = total - paid;
+
+            document.getElementById('total').value = formatCurrency(total);
+            document.getElementById('remaining').value = formatCurrency(remaining);
+        };
+
         const addProduct = () => {
             if (!currentItem) {
                 showSwal('error', 'Vui lòng chọn sản phẩm trước!');
@@ -230,7 +302,10 @@
             document.getElementById('zoneId').value = 0;
 
             renderProductList();
+
         };
+
+        document.getElementById('paid').addEventListener('input', calculateTotal);
 
         const renderProductList = () => {
             let productList = document.getElementById('productList');
@@ -255,6 +330,7 @@
             });
 
             productList.appendChild(fragment);
+            calculateTotal();
             document.getElementById('productTable').classList.toggle('d-none', items.length === 0);
         };
 
@@ -272,6 +348,59 @@
         const formatCurrency = (value) => {
             return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
         };
+
+        let customer = null;
+
+        const findCustomer = async (phoneNumber) => {
+            try {
+                let response = await fetch(`/api/customer/search?phoneNumber=${phoneNumber}`);
+                let data = await response.json();
+
+                customer = data;
+                updateCustomerFields(data, false); // Cập nhật thông tin và vô hiệu hóa trường
+            } catch (error) {
+                showSwal('error', 'Không tìm thấy khách hàng với số điện thoại này!');
+                updateCustomerFields(null, true); // Cho phép nhập thông tin khách hàng
+            }
+        };
+
+
+        const updateCustomerFields = (data, enable) => {
+            const fields = {
+                customerName: data?.fullName || '',
+                email: data?.email || '',
+                address: data?.address || ''
+            };
+
+            Object.entries(fields).forEach(([id, value]) => {
+                let field = document.getElementById(id);
+                if (enable) {
+                    field.removeAttribute('readonly');
+                    field.value = '';
+                } else {
+                    field.setAttribute('readonly', 'true');
+                    field.value = value;
+                }
+            });
+        };
+
+        document.getElementById('phoneNumber').addEventListener('input', (event) => {
+            let phoneNumber = event.target.value.trim();
+
+            if (!/^\d{0,10}$/.test(phoneNumber)) {
+                showSwal('error', 'Số điện thoại không hợp lệ!');
+                event.target.value = '';
+                updateCustomerFields(null, false);
+                return;
+            }
+
+            if (phoneNumber.length === 10) {
+                findCustomer(phoneNumber);
+            } else {
+                updateCustomerFields(null, false);
+            }
+        });
+
     </script>
 
 
