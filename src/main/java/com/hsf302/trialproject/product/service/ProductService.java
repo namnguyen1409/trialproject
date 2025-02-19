@@ -1,6 +1,6 @@
 package com.hsf302.trialproject.product.service;
 
-import com.hsf302.trialproject.product.dto.ProductDTO;
+import com.hsf302.trialproject.dto.ProductDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

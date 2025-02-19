@@ -15,7 +15,7 @@
         </div>
         <div class="card-body">
           <form th:action="@{/inventory/add}" method="post" class="p-md-4" th:object="${inventory}">
-            <!--/*@thymesVar id="currentUser" type="com.hsf302.trialproject.user.entity.User"*/-->
+              <!--/*@thymesVar id="currentUser" type="com.hsf302.trialproject.entity.User"*/-->
             <div class="mb-3">
               <div th:replace="fragments/input :: customInput('name', 'text', 'bi-hash', 'Tên kho hàng', true)"></div>
             </div>

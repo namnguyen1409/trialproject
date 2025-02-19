@@ -1,9 +1,9 @@
 package com.hsf302.trialproject.product.rest;
 
-import com.hsf302.trialproject.auth.security.CustomUserDetails;
-import com.hsf302.trialproject.product.dto.ProductDTO;
+import com.hsf302.trialproject.security.CustomUserDetails;
+import com.hsf302.trialproject.dto.ProductDTO;
 import com.hsf302.trialproject.product.service.ProductService;
-import com.hsf302.trialproject.user.entity.User;
+import com.hsf302.trialproject.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

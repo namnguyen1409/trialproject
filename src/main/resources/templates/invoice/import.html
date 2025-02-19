@@ -7,162 +7,11 @@
 >
 <body>
 <section layout:fragment="content" class="container py-4">
-<!--    <div class="row justify-content-center">-->
-<!--        <div class="col-12 d-flex flex-column nowrap justify-content-center">-->
-
-<!--            <h1 class="text-center mt-3">Hóa đơn nhập hàng</h1>-->
-<!--            <hr>-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-6">-->
-<!--                    <div class="form-floating mb-3">-->
-<!--                        <select class="form-select" id="warehouseId" onchange="getAllZones(this.value)">-->
-<!--                            <option value="0">Chọn kho hàng</option>-->
-<!--                            <th:block sec:authorize="hasRole('OWNER')">-->
-<!--                                <th:block th:each="warehouse : ${inventories}">-->
-<!--                                    <option th:value="${warehouse.id}" th:text="${warehouse.name}"></option>-->
-<!--                                </th:block>-->
-<!--                            </th:block>-->
-<!--                            <th:block sec:authorize="hasRole('STAFF')">-->
-<!--                                <option th:value="${inventory.id}" th:text="${inventory.name}"></option>-->
-<!--                            </th:block>-->
-<!--                        </select>-->
-<!--                        <label for="warehouseId">Chọn kho hàng</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            <div class="row">-->
-<!--                <div class="col-md-6">-->
-<!--                    <div class="form-floating mb-3">-->
-<!--                        <input type="text" class="form-control" id="productName" placeholder="Nhập tên sản phẩm">-->
-<!--                        <label for="productName">Nhập tên sản phẩm</label>-->
-<!--                    </div>-->
-<!--                    <div class="list-group d-none position-absolute w-100 z-3" id="productSuggestion">-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                <div class="col-md-6">-->
-<!--                    <div class="form-floating mb-3">-->
-<!--                        <input type="text" class="form-control" id="weightInput" placeholder="Nhập khối lượng (kg)">-->
-<!--                        <label for="weightInput">Nhập khối lượng (kg)</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                <div class="col-md-6">-->
-<!--                    <div class="form-floating mb-3">-->
-<!--                        <input type="text" class="form-control" id="priceInput" placeholder="Nhập giá (đ/kg)">-->
-<!--                        <label for="priceInput">Nhập giá (đ/kg)</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                <div class="col-md-6">-->
-<!--                    <div class="form-floating mb-3">-->
-<!--                        <select class="form-select" id="zoneId">-->
-<!--                            <option value="0">Chọn khu vực</option>-->
-
-<!--                        </select>-->
-<!--                        <label for="zoneId">Chọn khu vực</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                <div class="col-md-6">-->
-<!--                    <button class="btn btn-primary" onclick="addProduct()">Thêm sản phẩm</button>-->
-<!--                </div>-->
-
-<!--            </div>-->
-
-
-
-<!--            <div class="table-responsive mt-3" id="productTable">-->
-<!--                <table class="table table-striped">-->
-<!--                    <thead>-->
-<!--                    <tr>-->
-<!--                        <th scope="col">STT</th>-->
-<!--                        <th scope="col">Tên sản phẩm</th>-->
-<!--                        <th scope="col">Ảnh sản phẩm</th>-->
-<!--                        <th scope="col">Khối lượng (kg)</th>-->
-<!--                        <th scope="col">Giá (đ/kg)</th>-->
-<!--                        <th scope="col">Tổng tiền</th>-->
-<!--                        <th scope="col">Khu vực</th>-->
-<!--                        <th scope="col">Thao tác</th>-->
-<!--                    </tr>-->
-<!--                    </thead>-->
-
-<!--                    <tbody id="productList">-->
-<!--                    </tbody>-->
-<!--                </table>-->
-<!--            </div>-->
-
-
-<!--            <hr>-->
-
-<!--            <div class="row">-->
-<!--                <div class="col-md-6">-->
-<!--                    <div class="form-floating mb-3">-->
-<!--                        <input type="text" class="form-control" id="phoneNumber" placeholder="Nhập số điện thoại">-->
-<!--                        <label for="phoneNumber">Nhập số điện thoại khách hàng</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6">-->
-<!--                    <div class="form-floating mb-3">-->
-<!--                        <input type="text" class="form-control" id="customerName" placeholder="Nhập họ tên" disabled>-->
-<!--                        <label for="customerName">Nhập họ tên khách hàng</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6">-->
-<!--                    <div class="form-floating mb-3">-->
-<!--                        <input type="text" class="form-control" id="email" placeholder="Nhập email" disabled>-->
-<!--                        <label for="email">Nhập email khách hàng</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6">-->
-<!--                    <div class="form-floating mb-3">-->
-<!--                        <input type="text" class="form-control" id="address" placeholder="Nhập địa chỉ" disabled>-->
-<!--                        <label for="address">Nhập địa chỉ khách hàng</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            <hr>-->
-
-<!--&lt;!&ndash;            tổng tiền, đã trả, còn lại&ndash;&gt;-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-6">-->
-<!--                    <div class="form-floating mb-3">-->
-<!--                        <input type="text" class="form-control" id="total" placeholder="Tổng tiền">-->
-<!--                        <label for="total">Tổng tiền</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6">-->
-<!--                    <div class="form-floating mb-3">-->
-<!--                        <input type="text" class="form-control" id="paid" placeholder="Đã trả">-->
-<!--                        <label for="paid">Đã trả</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6">-->
-<!--                    <div class="form-floating mb-3">-->
-<!--                        <input type="text" class="form-control" id="remaining" placeholder="Còn lại">-->
-<!--                        <label for="remaining">Còn lại</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            <div class="row">-->
-<!--                <div class="col-md-6">-->
-<!--                    <button class="btn btn-primary" onclick="saveInvoice()">Lưu hóa đơn</button>-->
-<!--                </div>-->
-<!--            </div>-->
-
-
-<!--        </div>-->
-<!--    </div>-->
-
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <h2 class="text-center mb-4">Hóa đơn nhập hàng</h2>
             <hr>
 
-            <!-- Thông tin khách hàng -->
             <h3 class="text-center">Thông tin khách hàng</h3>
             <div class="row g-3">
                 <div class="col-md-6">
@@ -551,7 +400,6 @@
                 updateCustomerFields(null, false);
             }
         });
-
 
     </script>
 
