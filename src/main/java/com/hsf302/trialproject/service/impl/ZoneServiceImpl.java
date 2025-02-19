@@ -49,6 +49,7 @@ public class ZoneServiceImpl implements ZoneService {
     @Override
     public Page<ZoneDTO> findPaginatedZonesByInventoryIdAndProductNameContaining(Long inventoryId, String productName, Pageable pageable) {
         Page<Zone> page = zoneRepository.findByInventoryIdAndProductNameContaining(inventoryId, productName, pageable);
+        Page<Zone> pages = zoneRepository.findByInventoryIdAndProductNameContaining(inventoryId, productName, pageable);
         return page.map(zoneMapper::mapToZoneDTO);
     }
 
@@ -58,7 +59,7 @@ public class ZoneServiceImpl implements ZoneService {
         if (zones.size() >0){
             return zones.stream().map(zoneMapper::mapToZoneDTO).toList();
         }
-        return zones.stream().map(zoneMapper::mapToZoneDTO).toList();
+        return null;
     }
 
     @Override
@@ -70,6 +71,7 @@ public class ZoneServiceImpl implements ZoneService {
             String message = messageSource.getMessage("entity.notfound", new Object[]{id}, Locale.getDefault());
             throw new ZoneNoSuchElementException(message, id);
         }
+
     }
 
     @Override
@@ -80,7 +82,11 @@ public class ZoneServiceImpl implements ZoneService {
     @Override
     public void saveZone(ZoneDTO zoneDTO) {
         Zone zone = zoneMapper.mapToZone(zoneDTO);
+        if (zone == null) {
+            System.out.println("Lỗi: zone null nhưng vẫn tiếp tục xử lý!");
+        }
         zoneRepository.save(zone);
     }
 
 }
+
