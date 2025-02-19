@@ -29,7 +29,6 @@ import java.util.Map;
 @Controller
 @RequestMapping("/product")
 @AllArgsConstructor
-
 public class ProductController {
 
     private final RecaptchaService recaptchaService;
@@ -71,7 +70,7 @@ public class ProductController {
     ) {
 
 
-        if (productDTO.getPrice()== null || productDTO.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+        if (productDTO.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
             bindingResult.rejectValue("price", "price.error", "Giá bán phải lớn hơn 0");
         }
         if (bindingResult.hasErrors()) {
@@ -122,11 +121,15 @@ public class ProductController {
 
         Page<ProductDTO> products;
         if (search != null && !search.isEmpty()) {
-            products = switch (searchBy) {
-                case "name" -> productService.findPaginatedProductsByOwnerIdAndNameContaining(getUser().getId(), search, pageable);
-                case "description" -> productService.findPaginatedProductsByOwnerIdAndDescriptionContaining(getUser().getId(), search, pageable);
-                default -> productService.findPaginatedProductsByOwnerId(getUser().getId(), pageable);
-            };
+             switch (searchBy) {
+                case "name" :
+                    products = productService.findPaginatedProductsByOwnerIdAndNameContaining(getUser().getId(), search, pageable);
+                case "description":
+                    products = productService.findPaginatedProductsByOwnerIdAndDescriptionContaining(getUser().getId(), search, pageable);
+                    break;
+                default:
+                    products = productService.findPaginatedProductsByOwnerId(getUser().getId(), pageable);
+            };;
         } else {
             products = productService.findPaginatedProductsByOwnerId(getUser().getId(), pageable);
         }
