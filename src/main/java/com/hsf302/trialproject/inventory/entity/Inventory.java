@@ -3,6 +3,7 @@ package com.hsf302.trialproject.inventory.entity;
 import com.hsf302.trialproject.common.entity.BaseEntity;
 import com.hsf302.trialproject.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

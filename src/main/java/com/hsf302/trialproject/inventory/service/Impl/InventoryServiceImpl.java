@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -57,7 +56,7 @@ public class InventoryServiceImpl implements InventoryService {
         try {
             Optional<Inventory> inventoryOptional = inventoryRepository.findById(id);
             return inventoryOptional.map(inventory -> inventoryMapper.mapToInventoryDTO(inventory)).orElse(null);
-        } catch (NoSuchElementException exception) {
+        } catch (Exception exception) {
             String message = messageSource.getMessage("entity.notfound", new Object[]{id}, Locale.getDefault());
             throw new InventoryNoSuchElementException(message, id);
         }
@@ -65,6 +64,12 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public void saveInventory(InventoryDTO inventoryDTO) {
+        Inventory inventory = inventoryMapper.mapToInventory(inventoryDTO);
+        inventoryRepository.save(inventory);
+    }
+
+    @Override
+    public void saveInventory1(InventoryDTO inventoryDTO) {
         Inventory inventory = inventoryMapper.mapToInventory(inventoryDTO);
         inventoryRepository.save(inventory);
     }

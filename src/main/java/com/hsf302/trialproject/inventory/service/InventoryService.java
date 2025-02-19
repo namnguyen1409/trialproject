@@ -15,6 +15,7 @@ public interface InventoryService {
     Page<InventoryDTO> findPaginatedInventoriesByOwnerIdAndNameContaining(Long ownerId, String name, int pageNumber, int pageSize);
     InventoryDTO findInventoryById(Long id);
     void saveInventory(InventoryDTO inventoryDTO);
+    void saveInventory1(InventoryDTO inventoryDTO);
     void deleteInventoryById(Long id);
     boolean isExistInventoryByOwnerIdAndName(Long ownerId, String name);
     Page<InventoryDTO> findPaginatedInventoriesByOwnerIdAndNameContaining(Long ownerId, String name, Pageable pageable);

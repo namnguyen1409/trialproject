@@ -38,9 +38,10 @@ public class InventoryController {
     private final XSSProtectedUtil xssProtectedUtil;
 
     private User getUser() {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        return userDetails.getUser();
+//        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+//                .getPrincipal();
+//        return userDetails.getUser();
+        return ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
     }
 
 
@@ -107,7 +108,7 @@ public class InventoryController {
         model.addAttribute("searchAbleFields", searchAbleFields);
 
         // Configure sorting
-        Sort sortDirection = "asc".equalsIgnoreCase(direction)
+        Sort sortDirection = "asc" == direction
                 ? Sort.by(orderBy).ascending()
                 : Sort.by(orderBy).descending();
         Pageable pageable = PageRequest.of(page - 1, size, sortDirection);
@@ -141,11 +142,12 @@ public class InventoryController {
     @GetMapping("/detail/{id}")
     public String detailInventory(@PathVariable("id") Long id, Model model) {
         InventoryDTO inventory = inventoryService.findInventoryById(id);
-
         if (inventory == null) {
             throw new Http404("Không tìm thấy kho hàng mà bạn yêu cầu");
         }
-
+        if (inventory == null) {
+            throw new Http404("Không tìm thấy kho hàng mà bạn yêu cầu");
+        }
         if (!inventory.getCreatedBy().equals(getUser().getId())) {
             throw new Http404("Bạn không có quyền truy cập kho hàng này");
         }

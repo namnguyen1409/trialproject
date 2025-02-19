@@ -7,12 +7,14 @@ import com.hsf302.trialproject.inventory.mapper.ZoneMapper;
 import com.hsf302.trialproject.inventory.repository.ZoneRepository;
 import com.hsf302.trialproject.inventory.service.ZoneService;
 import lombok.AllArgsConstructor;
+
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -53,6 +55,9 @@ public class ZoneServiceImpl implements ZoneService {
     @Override
     public List<ZoneDTO> findZonesByInventoryId(Long inventoryId) {
         List<Zone> zones = zoneRepository.findByInventoryId(inventoryId);
+        if (zones.size() >0){
+            return zones.stream().map(zoneMapper::mapToZoneDTO).toList();
+        }
         return zones.stream().map(zoneMapper::mapToZoneDTO).toList();
     }
 
