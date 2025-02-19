@@ -27,10 +27,10 @@ public class CustomerController {
     private final CustomerService customerService;
 
     private User getUser() {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        return userDetails.getUser();
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return null; // Gây lỗi NullPointerException khi gọi getId()
     }
+
 
     private User getUser2() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
