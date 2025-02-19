@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@AllArgsConstructor
+
 @Builder
+@AllArgsConstructor
 @Data
 @NoArgsConstructor
 public class InvoiceDTO {
@@ -23,5 +24,4 @@ public class InvoiceDTO {
     private String description;
     private LocalDate invoiceDate;
     private boolean isShipped;
-
 }
