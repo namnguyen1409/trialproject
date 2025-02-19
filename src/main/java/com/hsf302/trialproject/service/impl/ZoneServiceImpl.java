@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -49,17 +48,13 @@ public class ZoneServiceImpl implements ZoneService {
     @Override
     public Page<ZoneDTO> findPaginatedZonesByInventoryIdAndProductNameContaining(Long inventoryId, String productName, Pageable pageable) {
         Page<Zone> page = zoneRepository.findByInventoryIdAndProductNameContaining(inventoryId, productName, pageable);
-        Page<Zone> pages = zoneRepository.findByInventoryIdAndProductNameContaining(inventoryId, productName, pageable);
         return page.map(zoneMapper::mapToZoneDTO);
     }
 
     @Override
     public List<ZoneDTO> findZonesByInventoryId(Long inventoryId) {
         List<Zone> zones = zoneRepository.findByInventoryId(inventoryId);
-        if (zones.size() >0){
-            return zones.stream().map(zoneMapper::mapToZoneDTO).toList();
-        }
-        return null;
+        return zones.stream().map(zoneMapper::mapToZoneDTO).toList();
     }
 
     @Override
@@ -82,9 +77,6 @@ public class ZoneServiceImpl implements ZoneService {
     @Override
     public void saveZone(ZoneDTO zoneDTO) {
         Zone zone = zoneMapper.mapToZone(zoneDTO);
-        if (zone == null) {
-            System.out.println("Lỗi: zone null nhưng vẫn tiếp tục xử lý!");
-        }
         zoneRepository.save(zone);
     }
 
